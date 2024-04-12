@@ -3,4 +3,4 @@ save_weights/
 .vscode/
 data_json/
 train_utils/__pycache__/
-coco91_indices.json
+

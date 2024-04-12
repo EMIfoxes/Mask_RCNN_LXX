@@ -283,4 +283,5 @@ if __name__ == '__main__':
     train = MY_CocoDetection("D:/DL_Data/Planting_path/navigasi_robot_semprot_2.v3i.coco-segmentation",data_json_name='planting', dataset="train")
     print(train.__len__())
     print(train.__getitem__(0))
+    print(train.coco)
     
