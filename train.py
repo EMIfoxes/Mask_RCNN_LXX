@@ -93,7 +93,7 @@ def main(args):
 
     # load validation data set
     # coco2017 -> annotations -> instances_val2017.json
-    val_dataset = MY_CocoDetection(data_root, "val", data_transform["val"])
+    val_dataset = MY_CocoDetection(root=data_root, dataset="val", transforms=data_transform["val"])
         
     # VOCdevkit -> VOC2012 -> ImageSets -> Main -> val.txt
     # val_dataset = VOCInstances(data_root, year="2012",file_set="trainval", txt_name="val.txt", transforms=data_transform["val"])
@@ -139,14 +139,14 @@ def main(args):
 
     for epoch in range(args.start_epoch, args.epochs):
         # train for one epoch, printing every 100 iterations
-        # mean_loss, lr = utils.train_one_epoch(model, optimizer, train_data_loader,
-        #                                       device, epoch, print_freq=100,
-        #                                       warmup=True, scaler=scaler)
-        # train_loss.append(mean_loss.item())
-        # learning_rate.append(lr)
+        mean_loss, lr = utils.train_one_epoch(model, optimizer, train_data_loader,
+                                              device, epoch, print_freq=100,
+                                              warmup=True, scaler=scaler)
+        train_loss.append(mean_loss.item())
+        learning_rate.append(lr)
 
-        # # update the learning rate
-        # lr_scheduler.step()
+        # update the learning rate
+        lr_scheduler.step()
 
         # evaluate on the test dataset
         det_info, seg_info = utils.evaluate(model, val_data_loader, device=device)
