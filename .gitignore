@@ -3,4 +3,6 @@ save_weights/
 .vscode/
 data_json/
 train_utils/__pycache__/
+backbone/__pycache__/
+network_files/__pycache__/
 

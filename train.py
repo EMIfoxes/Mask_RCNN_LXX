@@ -13,20 +13,20 @@ from train_utils import train_eval_utils as utils
 from train_utils import GroupedBatchSampler, create_aspect_ratio_groups
 
 
-def create_model(num_classes, load_pretrain_weights=True):
+def create_model(num_classes, load_pretrain_weights=True,backbone_weights_path=None,pretrain_weights_path=None):
     # 如果GPU显存很小，batch_size不能设置很大，建议将norm_layer设置成FrozenBatchNorm2d(默认是nn.BatchNorm2d)
     # FrozenBatchNorm2d的功能与BatchNorm2d类似，但参数无法更新
     # trainable_layers包括['layer4', 'layer3', 'layer2', 'layer1', 'conv1']， 5代表全部训练
     # backbone = resnet50_fpn_backbone(norm_layer=FrozenBatchNorm2d,
     #                                  trainable_layers=3)
     # resnet50 imagenet weights url: https://download.pytorch.org/models/resnet50-0676ba61.pth
-    backbone = resnet50_fpn_backbone(pretrain_path="D:/Pretrained_model_weights/resnet50.pth", trainable_layers=3)
+    backbone = resnet50_fpn_backbone(pretrain_path="{}".format(backbone_weights_path), trainable_layers=3)
 
     model = MaskRCNN(backbone, num_classes=num_classes)
 
     if load_pretrain_weights:
         # coco weights url: "https://download.pytorch.org/models/maskrcnn_resnet50_fpn_coco-bf2d0c1e.pth"
-        weights_dict = torch.load("D:/Pretrained_model_weights/maskrcnn_resnet50_fpn_coco.pth", map_location="cpu")
+        weights_dict = torch.load("{}".format(pretrain_weights_path), map_location="cpu")
         for k in list(weights_dict.keys()):
             if ("box_predictor" in k) or ("mask_fcn_logits" in k):
                 del weights_dict[k]
@@ -105,7 +105,7 @@ def main(args):
                                                   collate_fn=train_dataset.collate_fn)
 
     # create model num_classes equal background + classes
-    model = create_model(num_classes=args.num_classes + 1, load_pretrain_weights=args.pretrain)
+    model = create_model(num_classes=args.num_classes + 1, load_pretrain_weights=args.pretrain,backbone_weights_path=args.backbone_weights_path,pretrain_weights_path=args.pretrain_weights_path)
     model.to(device)
 
     train_loss = []
@@ -232,7 +232,12 @@ if __name__ == "__main__":
     parser.add_argument('--batch_size', default=2, type=int, metavar='N',
                         help='batch size when training.')
     parser.add_argument('--aspect-ratio-group-factor', default=3, type=int)
+
     parser.add_argument("--pretrain", type=bool, default=True, help="load COCO pretrain weights.")
+    parser.add_argument("--backbone_weights_path", default="D:/Pretrained_model_weights/resnet50.pth")
+    parser.add_argument("--pretrain_weights_path", default="D:/Pretrained_model_weights/maskrcnn_resnet50_fpn_coco.pth")
+
+
     # 是否使用混合精度训练(需要GPU支持混合精度)
     parser.add_argument("--amp", default=True, help="Use torch.cuda.amp for mixed precision training")
 

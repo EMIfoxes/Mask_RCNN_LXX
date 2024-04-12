@@ -3,3 +3,6 @@ python train.py --data-path 'D:/DL_Data/COCO2017' --num-classes 90 --batch_size 
 
 my
 python train.py --data-path 'D:/DL_Data/Planting_path/navigasi_robot_semprot_2.v3i.coco-segmentation' --num-classes 4 --batch_size 4 --epochs 1 
+
+other
+python train.py --data-path 'D:/LXX/Data/Planting_path/navigasi_robot_semprot_2.v3i.coco-segmentation' --num-classes 4 --batch_size 4 --epochs 1 --backbone_weights_path "D:/LXX/Pretrained_model_weights/resnet50.pth" --pretrain_weights_path "D:/LXX/Pretrained_model_weights/maskrcnn_resnet50_fpn_coco.pth"
