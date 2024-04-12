@@ -178,6 +178,8 @@ class MY_CocoDetection(data.Dataset):
 
         if dataset == "train":
             json_str = json.dumps(coco_classes, indent=4)
+            if not os.path.exists('data_json/'):
+                os.makedirs('data_json/')
             with open("data_json/{}.json".format(data_json_name), "w") as f:
                 f.write(json_str)
 
