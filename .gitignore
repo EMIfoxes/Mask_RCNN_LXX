@@ -2,3 +2,4 @@ __pycache__/
 save_weights/
 .vscode/
 data_json/
+trian_utils/__pycache__/

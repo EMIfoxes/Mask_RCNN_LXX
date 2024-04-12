@@ -139,14 +139,14 @@ def main(args):
 
     for epoch in range(args.start_epoch, args.epochs):
         # train for one epoch, printing every 100 iterations
-        mean_loss, lr = utils.train_one_epoch(model, optimizer, train_data_loader,
-                                              device, epoch, print_freq=100,
-                                              warmup=True, scaler=scaler)
-        train_loss.append(mean_loss.item())
-        learning_rate.append(lr)
+        # mean_loss, lr = utils.train_one_epoch(model, optimizer, train_data_loader,
+        #                                       device, epoch, print_freq=100,
+        #                                       warmup=True, scaler=scaler)
+        # train_loss.append(mean_loss.item())
+        # learning_rate.append(lr)
 
-        # update the learning rate
-        lr_scheduler.step()
+        # # update the learning rate
+        # lr_scheduler.step()
 
         # evaluate on the test dataset
         det_info, seg_info = utils.evaluate(model, val_data_loader, device=device)
