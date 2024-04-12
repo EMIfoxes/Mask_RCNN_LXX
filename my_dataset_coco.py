@@ -59,6 +59,48 @@ class CocoDetection(data.Dataset):
         else:
             self.ids = ids
 
+class MY_CocoDetection(data.Dataset):
+
+    def __init__(self, root, dataset="train", data_json_name=None, transforms=None):
+        super(MY_CocoDetection, self).__init__()
+        assert dataset in ["train", "val"], 'dataset must be in ["train", "val"]'
+        anno_file = f"instances_{dataset}.json"
+        assert os.path.exists(root), "file '{}' does not exist.".format(root)
+        self.img_root = os.path.join(root, f"{dataset}")
+        assert os.path.exists(self.img_root), "path '{}' does not exist.".format(self.img_root)
+        self.anno_path = os.path.join(root, "annotations", anno_file)
+        assert os.path.exists(self.anno_path), "file '{}' does not exist.".format(self.anno_path)
+
+        self.mode = dataset
+        self.transforms = transforms
+        self.coco = COCO(self.anno_path)
+
+        # 获取coco数据索引与类别名称的关系
+        # 注意在object80中的索引并不是连续的，虽然只有80个类别，但索引还是按照stuff91来排序的
+        data_classes = dict([(v["id"], v["name"]) for k, v in self.coco.cats.items()])
+        max_index = max(data_classes.keys())  # 90
+        # 将缺失的类别名称设置成N/A
+        coco_classes = {}
+        for k in range(1, max_index + 1):
+            if k in data_classes:
+                coco_classes[k] = data_classes[k]
+            else:
+                coco_classes[k] = "N/A"
+
+        if dataset == "train":
+            json_str = json.dumps(coco_classes, indent=4)
+            with open("data_json/{}.json".format(data_json_name), "w") as f:
+                f.write(json_str)
+
+        self.coco_classes = coco_classes
+
+        ids = list(sorted(self.coco.imgs.keys()))
+        if dataset == "train":
+            # 移除没有目标，或者目标面积非常小的数据
+            valid_ids = coco_remove_images_without_annotations(self.coco, ids)
+            self.ids = valid_ids
+        else:
+            self.ids = ids
     def parse_targets(self,
                       img_id: int,
                       coco_targets: list,
@@ -149,6 +191,7 @@ class CocoDetection(data.Dataset):
 
 
 if __name__ == '__main__':
-    train = CocoDetection("/data/coco2017", dataset="train")
-    print(len(train))
-    t = train[0]
+    train = MY_CocoDetection("D:/DL_Data/Planting_path/navigasi_robot_semprot_2.v3i.coco-segmentation",data_json_name='planting', dataset="train")
+    print(train.__len__())
+    print(train.__getitem__(0))
+    
