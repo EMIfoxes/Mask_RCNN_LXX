@@ -1,0 +1,2 @@
+coco
+python train.py --data_path 'D:/DL_Data/COCO2017' --num_classes 90 --batch_size 5 
