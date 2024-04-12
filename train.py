@@ -7,7 +7,7 @@ from torchvision.ops.misc import FrozenBatchNorm2d
 import transforms
 from network_files import MaskRCNN
 from backbone import resnet50_fpn_backbone
-from my_dataset_coco import CocoDetection
+from my_dataset_coco import CocoDetection,MY_CocoDetection
 from my_dataset_voc import VOCInstances
 from train_utils import train_eval_utils as utils
 from train_utils import GroupedBatchSampler, create_aspect_ratio_groups
@@ -56,7 +56,7 @@ def main(args):
 
     # load train data set
     # coco2017 -> annotations -> instances_train2017.json
-    train_dataset = CocoDetection(data_root, "train", data_transform["train"])
+    train_dataset = MY_CocoDetection(data_root, "train",data_json_name='planting' ,transforms=data_transform["train"])
 
     # VOCdevkit -> VOC2012 -> ImageSets -> Main -> train.txt
     # train_dataset = VOCInstances(data_root, year="2012",file_set="trainval", txt_name="train.txt", transforms=data_transform["train"])
@@ -93,7 +93,7 @@ def main(args):
 
     # load validation data set
     # coco2017 -> annotations -> instances_val2017.json
-    val_dataset = CocoDetection(data_root, "val", data_transform["val"])
+    val_dataset = MY_CocoDetection(data_root, "val", data_transform["val"])
         
     # VOCdevkit -> VOC2012 -> ImageSets -> Main -> val.txt
     # val_dataset = VOCInstances(data_root, year="2012",file_set="trainval", txt_name="val.txt", transforms=data_transform["val"])
