@@ -52,7 +52,13 @@ def draw_text(draw,
     # box exceeds the top of the image, stack the strings below the bounding box
     # instead of above.
     display_str = f"{category_index[str(cls)]}: {int(100 * score)}%"
-    display_str_heights = [font.getsize(ds)[1] for ds in display_str]
+
+    display_str_heights=[]
+    temp= [font.getbbox(ds) for ds in display_str]
+    for i in temp:
+        _, y0, _, y1 = i
+        display_str_heights.append(y1-y0)
+
     # Each display_str has a top and bottom margin of 0.05x.
     display_str_height = (1 + 2 * 0.05) * max(display_str_heights)
 
@@ -63,16 +69,22 @@ def draw_text(draw,
         text_top = bottom
         text_bottom = bottom + display_str_height
 
+    text_width=[]
     for ds in display_str:
-        text_width, text_height = font.getsize(ds)
-        margin = np.ceil(0.05 * text_width)
+        # text_width, _ = font.getsize(ds)
+        temp= [font.getbbox(ds)]
+        for i in temp:
+            x0, _, x1, _ = i
+            text_width.append(x1-x0)
+
+        margin = np.ceil(0.05 * text_width[0])
         draw.rectangle([(left, text_top),
-                        (left + text_width + 2 * margin, text_bottom)], fill=color)
+                        (left + text_width[0] + 2 * margin, text_bottom)], fill=color)
         draw.text((left + margin, text_top),
                   ds,
                   fill='black',
                   font=font)
-        left += text_width
+        left += text_width[0]
 
 
 def draw_masks(image, masks, colors, thresh: float = 0.7, alpha: float = 0.5):

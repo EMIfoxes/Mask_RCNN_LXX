@@ -7,5 +7,7 @@ python train.py --data-path 'D:/DL_Data/Planting_path/navigasi_robot_semprot_2.v
 other
 one-epoch
 python train.py --data-path 'D:/LXX/Data/Planting_path/navigasi_robot_semprot_2.v3i.coco-segmentation' --num-classes 4 --batch_size 4 --epochs 1 --backbone_weights_path "D:/LXX/Pretrained_model_weights/resnet50.pth" --pretrain_weights_path "D:/LXX/Pretrained_model_weights/maskrcnn_resnet50_fpn_coco.pth"
-
 python train.py --data-path 'D:/LXX/Data/Planting_path/navigasi_robot_semprot_2.v3i.coco-segmentation' --num-classes 4 --batch_size 16 --epochs 500 --backbone_weights_path "D:/LXX/Pretrained_model_weights/resnet50.pth" --pretrain_weights_path "D:/LXX/Pretrained_model_weights/maskrcnn_resnet50_fpn_coco.pth"
+
+predict
+python predict.py --num-classes 4 --box_thresh 0.5 --weights_path 'save_weights/model_0.pth' --img_path "D:/DL_Data/Planting_path/navigasi_robot_semprot_2.v3i.coco-segmentation/test/VID_20231120_091814_out0005_jpg.rf.63bd7a61870a30be34122c0ca00c5d5b.jpg" --label_json_path 'data_json/planting.json'

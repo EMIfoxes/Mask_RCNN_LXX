@@ -28,35 +28,31 @@ def time_synchronized():
     return time.time()
 
 
-def main():
-    num_classes = 90  # 不包含背景
-    box_thresh = 0.5
-    weights_path = "./save_weights/model_25.pth"
-    img_path = "./test.jpg"
-    label_json_path = './coco91_indices.json'
+def main(args):
+
 
     # get devices
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     print("using {} device.".format(device))
 
     # create model
-    model = create_model(num_classes=num_classes + 1, box_thresh=box_thresh)
+    model = create_model(num_classes=args.num_classes + 1, box_thresh=args.box_thresh)
 
     # load train weights
-    assert os.path.exists(weights_path), "{} file dose not exist.".format(weights_path)
-    weights_dict = torch.load(weights_path, map_location='cpu')
+    assert os.path.exists(args.weights_path), "{} file dose not exist.".format(args.weights_path)
+    weights_dict = torch.load(args.weights_path, map_location='cpu')
     weights_dict = weights_dict["model"] if "model" in weights_dict else weights_dict
     model.load_state_dict(weights_dict)
     model.to(device)
 
     # read class_indict
-    assert os.path.exists(label_json_path), "json file {} dose not exist.".format(label_json_path)
-    with open(label_json_path, 'r') as json_file:
+    assert os.path.exists(args.label_json_path), "json file {} dose not exist.".format(args.label_json_path)
+    with open(args.label_json_path, 'r') as json_file:
         category_index = json.load(json_file)
 
     # load image
-    assert os.path.exists(img_path), f"{img_path} does not exits."
-    original_img = Image.open(img_path).convert('RGB')
+    assert os.path.exists(args.img_path), f"{args.img_path} does not exits."
+    original_img = Image.open(args.img_path).convert('RGB')
 
     # from pil image to tensor, do not normalize image
     data_transform = transforms.Compose([transforms.ToTensor()])
@@ -102,5 +98,22 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    
+    import argparse
+    parser = argparse.ArgumentParser()
+    # 检测目标类别数(不包含背景)
+    parser.add_argument('--num-classes', default=20, type=int, help='num_classes')
+    # IOU阈值
+    parser.add_argument('--box_thresh', default=0.5, type=float, help='box_thresh')
+    # 权重路径
+    parser.add_argument('--weights_path', default='save_weights/model_0.pth', help='weights_path')
+    # 测试图片路径
+    parser.add_argument('--img_path', default='"D:/DL_Data/img\dog.jpg"',type=str)
+    # label_json_path路径
+    parser.add_argument('--label_json_path', default='data_json/coco91_indices.json', type=str)
+
+    args = parser.parse_args()
+    print(args)
+
+    main(args)
 
