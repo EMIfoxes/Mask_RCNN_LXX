@@ -1,6 +1,7 @@
 __pycache__/
 save_weights/
 .vscode/
-data_json/
 train_utils/__pycache__/
-coco91_indices.json
+backbone/__pycache__/
+network_files/__pycache__/
+

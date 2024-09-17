@@ -178,6 +178,8 @@ class MY_CocoDetection(data.Dataset):
 
         if dataset == "train":
             json_str = json.dumps(coco_classes, indent=4)
+            if not os.path.exists('data_json/'):
+                os.makedirs('data_json/')
             with open("data_json/{}.json".format(data_json_name), "w") as f:
                 f.write(json_str)
 
@@ -283,4 +285,5 @@ if __name__ == '__main__':
     train = MY_CocoDetection("D:/DL_Data/Planting_path/navigasi_robot_semprot_2.v3i.coco-segmentation",data_json_name='planting', dataset="train")
     print(train.__len__())
     print(train.__getitem__(0))
+    print(train.coco)
     
